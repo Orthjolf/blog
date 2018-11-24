@@ -1,0 +1,25 @@
+<template>
+    <div>
+        <i>({{ article.id }})</i> {{ article.text }}
+        <span style="position: absolute; right: 0">
+    <input type="button" value="Edit" @click="edit"/>
+    <input type="button" value="X" @click="del"/>
+    </span>
+    </div>
+</template>
+<script>
+    export default {
+        methods: {
+            edit: function () {
+                this.editMethod(this.article);
+            },
+            del: function () {
+                articleApi.remove({id: this.article.id}).then(result => {
+                    if (result.ok) {
+                        this.articles.splice(this.articles.indexOf(this.article), 1)
+                    }
+                })
+            }
+        }
+    }
+</script>g
