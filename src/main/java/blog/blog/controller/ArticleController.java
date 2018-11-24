@@ -37,16 +37,18 @@ public class ArticleController {
 
 	@PutMapping("{id}")
 	public Article update(
-			@PathVariable("id") Article articleFromDb,
+			@PathVariable("id") Long id,
 			@RequestBody Article article
 	) {
+		Article articleFromDb = articleRepo.findById(id).get();
 		BeanUtils.copyProperties(article, articleFromDb, "id");
 
 		return articleRepo.save(articleFromDb);
 	}
 
 	@DeleteMapping("{id}")
-	public @ResponseBody void delete(@PathVariable("id") Article article) {
+	public void delete(@PathVariable("id") Long id) {
+		Article article = articleRepo.findById(id).get();
 		articleRepo.delete(article);
 	}
 }
