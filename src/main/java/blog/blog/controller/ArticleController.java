@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("article")
@@ -32,23 +33,31 @@ public class ArticleController {
 	@PostMapping
 	public Article create(@RequestBody Article article) {
 		article.setCreationDate(LocalDateTime.now());
+		article.setLastModifiedDate(LocalDateTime.now());
 		return articleRepo.save(article);
 	}
 
 	@PutMapping("{id}")
-	public Article update(
-			@PathVariable("id") Long id,
-			@RequestBody Article article
-	) {
-		Article articleFromDb = articleRepo.findById(id).get();
-		BeanUtils.copyProperties(article, articleFromDb, "id");
+	public Article update(@PathVariable("id") Long id, @RequestBody Article article
+	) throws Exception {
 
+		final Article articleFromDb = getOneIfExists(id);
+		BeanUtils.copyProperties(article, articleFromDb, "id");
 		return articleRepo.save(articleFromDb);
 	}
 
 	@DeleteMapping("{id}")
-	public void delete(@PathVariable("id") Long id) {
-		Article article = articleRepo.findById(id).get();
+	public void delete(@PathVariable("id") Long id) throws Exception {
+		Article article = getOneIfExists(id);
 		articleRepo.delete(article);
+	}
+
+	private Article getOneIfExists(Long id) throws Exception {
+		final Optional<Article> optional = articleRepo.findById(id);
+		final Article article = optional.orElse(null);
+		if (article == null)
+			throw new Exception("Article with id = " + id + " not found");
+
+		return article;
 	}
 }

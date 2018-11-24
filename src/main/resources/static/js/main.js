@@ -57,13 +57,18 @@ Vue.component('article-form', {
 
 Vue.component('article-row', {
     props: ['article', 'editMethod', 'articles'],
-    template: '<div>' +
-    '<i>({{ article.id }})</i> {{ article.text }}' +
-    '<span style="position: absolute; right: 0">' +
-    '<input type="button" value="Edit" @click="edit" />' +
-    '<input type="button" value="X" @click="del" />' +
-    '</span>' +
-    '</div>',
+    template: '<div class="card">' +
+    '              <div class="card-header">' +
+    '                  <a class="card-link" data-toggle="collapse">({{ article.id }})</a>' +
+    '                  <div class="card-body">' +
+    '                      {{ article.text }}' +
+    '                  </div>' +
+    '              </div>' +
+    '              <div class="card-footer">' +
+    '              <button type="button" class="btn btn-danger" @click="del">Удалить</button> ' +
+    '              <button type="button" class="btn btn-primary" @click="edit">Изменить</button>'+
+    '              </div>' +
+    '          </div>',
     methods: {
         edit: function () {
             this.editMethod(this.article);
@@ -86,7 +91,7 @@ Vue.component('articles-list', {
         }
     },
     template:
-    '<div style="position: relative; width: 300px;">' +
+    '<div style="position: relative">' +
     '<article-form :articles="articles" :articleAttr="article" />' +
     '<article-row v-for="article in articles" :key="article.id" :article="article" ' +
     ':editMethod="editMethod" :articles="articles" />' +
