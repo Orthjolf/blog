@@ -1,5 +1,6 @@
 package blog.blog.config;
 
+import blog.blog.domain.CurrentUser;
 import blog.blog.domain.User;
 import blog.blog.repository.UserRepository;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
@@ -41,6 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				return newUser;
 			});
 
+			CurrentUser.Instance = user;
 			return userDetailsRepo.save(user);
 		};
 	}

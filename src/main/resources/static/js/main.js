@@ -32,7 +32,9 @@ Vue.component('article-form', {
     '</div>',
     methods: {
         save: function () {
-            var article = {text: this.text};
+            var article = {
+                text: this.text
+            };
 
             if (this.id) {
                 articleApi.update({id: this.id}, article).then(result =>
@@ -59,14 +61,14 @@ Vue.component('article-row', {
     props: ['article', 'editMethod', 'articles'],
     template: '<div class="card">' +
     '              <div class="card-header">' +
-    '                  <a class="card-link" data-toggle="collapse">({{ article.id }})</a>' +
+    '                  <a class="card-link" data-toggle="collapse">({{ article.id }}) {{article.authorId}}</a>' +
     '                  <div class="card-body">' +
     '                      {{ article.text }}' +
     '                  </div>' +
     '              </div>' +
     '              <div class="card-footer">' +
     '              <button type="button" class="btn btn-danger" @click="del">Удалить</button> ' +
-    '              <button type="button" class="btn btn-primary" @click="edit">Изменить</button>'+
+    '              <button type="button" class="btn btn-primary" @click="edit">Изменить</button>' +
     '              </div>' +
     '          </div>',
     methods: {
@@ -96,13 +98,6 @@ Vue.component('articles-list', {
     '<article-row v-for="article in articles" :key="article.id" :article="article" ' +
     ':editMethod="editMethod" :articles="articles" />' +
     '</div>',
-    created: function () {
-        articleApi.get().then(result =>
-            result.json().then(data =>
-                data.forEach(article => this.articles.push(article))
-            )
-        )
-    },
     methods: {
         editMethod: function (article) {
             this.article = article;
@@ -112,8 +107,46 @@ Vue.component('articles-list', {
 
 var app = new Vue({
     el: '#app',
-    template: '<articles-list :articles="articles" />',
+    template: '<div>' +
+    '          <nav class="navbar navbar-expand-lg navbar-light bg-light static-top navbar-dark bg-dark">' +
+    '                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">' +
+    '                    <span class="navbar-toggler-icon"></span>' +
+    '                </button> <a class="navbar-brand" href="#">Test application for datateh</a>' +
+    '                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">' +
+
+    '                        <ul  v-if="!profile" class="navbar-nav ml-md-auto">' +
+    '                            <li class="nav-item active">' +
+    '                                <form action="/login">' +
+    '                                   <input class="btn btn-success" type="submit" value="Авторизация" />' +
+    '                                </form>' +
+    '                            </li>' +
+    '                        </ul>' +
+    '                        <ul v-else class="navbar-nav ml-md-auto">' +
+    '                            <li class="nav-item active">' +
+    '                                <a class="nav-link">{{profile.name}}</a>' +
+    '                            </li>' +
+    '                            <li>' +
+    '                                <form action="/logout">\' +\n' +
+    '                                    <input class="btn btn-danger" type="submit" value="Выйти" />' +
+    '                                </form>' +
+    '                            </li>' +
+    '                        </ul>' +
+
+    '                </div>' +
+    '            </nav>' +
+    '           <div v-if="profile">' +
+    '               <articles-list :articles="articles" />' +
+    '           </div>' +
+    '          </div>',
     data: {
-        articles: []
+        articles: frontendData.articles,
+        profile: frontendData.profile
+    },
+    created: function () {
+        // articleApi.get().then(result =>
+        //     result.json().then(data =>
+        //         data.forEach(article => this.articles.push(article))
+        //     )
+        // )
     }
 });

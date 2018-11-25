@@ -1,9 +1,12 @@
 package blog.blog.controller;
 
 import blog.blog.domain.Article;
+import blog.blog.domain.CurrentUser;
+import blog.blog.domain.User;
 import blog.blog.repository.ArticleRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -34,6 +37,7 @@ public class ArticleController {
 	public Article create(@RequestBody Article article) {
 		article.setCreationDate(LocalDateTime.now());
 		article.setLastModifiedDate(LocalDateTime.now());
+		article.setAuthorId(CurrentUser.Instance.getName());
 		return articleRepo.save(article);
 	}
 
